@@ -1,0 +1,6 @@
+{
+    "preset": "psr12",
+    "rules": {
+        "trailing_comma_in_multiline": true
+    }
+}
