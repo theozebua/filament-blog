@@ -8,6 +8,7 @@ use App\Filament\Resources\PostResource\Actions;
 use App\Models\Category;
 use App\Models\Post;
 use Filament\Forms;
+use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -53,8 +54,26 @@ class PostResource extends Resource
                         Forms\Components\Select::make('categories')
                             ->relationship('categories', 'name')
                             ->multiple()
+                            ->searchable()
                             ->options(Category::all()->pluck('name', 'id'))
-                            ->required(),
+                            ->required()
+                            ->createOptionAction(function (Action $action): Action {
+                                return $action
+                                    ->modalHeading('Create category')
+                                    ->modalSubmitActionLabel('Create')
+                                    ->modalWidth('lg');
+                            })
+                            ->createOptionForm([
+                                Forms\Components\TextInput::make('name')
+                                    ->required()
+                                    ->afterStateUpdated(fn (Forms\Set $set, ?string $state) => $set('slug', str($state)->slug()))
+                                    ->live(onBlur: true),
+
+                                Forms\Components\TextInput::make('slug')
+                                    ->required()
+                                    ->disabled()
+                                    ->dehydrated(),
+                            ]),
 
                         Forms\Components\SpatieTagsInput::make('tags'),
 
