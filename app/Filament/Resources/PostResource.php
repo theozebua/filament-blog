@@ -302,7 +302,7 @@ class PostResource extends Resource
             ->emptyStateActions([
                 Tables\Actions\Action::make('create')
                     ->label('New post')
-                    ->url(route('filament.admin.resources.posts.create'))
+                    ->url(static::getUrl('create'))
                     ->icon('heroicon-m-plus')
                     ->button(),
             ]);

@@ -69,7 +69,7 @@ class CategoryResource extends Resource
             ->emptyStateActions([
                 Tables\Actions\Action::make('create')
                     ->label('New category')
-                    ->url(route('filament.admin.resources.categories.create'))
+                    ->url(static::getUrl('create'))
                     ->icon('heroicon-m-plus')
                     ->button(),
             ]);
