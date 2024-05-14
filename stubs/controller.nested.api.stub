@@ -1,0 +1,38 @@
+<?php
+
+declare(strict_types=1);
+
+namespace {{ namespace }};
+
+use {{ namespacedModel }};
+use {{ rootNamespace }}Http\Controllers\Controller;
+use {{ namespacedParentModel }};
+use Illuminate\Http\Request;
+
+class {{ class }} extends Controller
+{
+    public function index({{ parentModel }} ${{ parentModelVariable }}): void
+    {
+        //
+    }
+
+    public function store(Request $request, {{ parentModel }} ${{ parentModelVariable }}): void
+    {
+        //
+    }
+
+    public function show({{ parentModel }} ${{ parentModelVariable }}, {{ model }} ${{ modelVariable }}): void
+    {
+        //
+    }
+
+    public function update(Request $request, {{ parentModel }} ${{ parentModelVariable }}, {{ model }} ${{ modelVariable }}): void
+    {
+        //
+    }
+
+    public function destroy({{ parentModel }} ${{ parentModelVariable }}, {{ model }} ${{ modelVariable }}): void
+    {
+        //
+    }
+}
