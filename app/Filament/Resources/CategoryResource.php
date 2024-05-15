@@ -56,10 +56,9 @@ class CategoryResource extends Resource
                     ->button(),
                 Tables\Actions\DeleteAction::make()
                     ->button()
-                    ->using(function (Category $record): void {
+                    ->before(function (Category $record): void {
                         // Delete relations to posts before deleting the category
                         $record->posts()->detach();
-                        $record->delete();
                     }),
             ])
             ->emptyStateIcon(static::$navigationIcon)
