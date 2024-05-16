@@ -52,6 +52,11 @@ class CreatePost extends CreateRecord
             });
     }
 
+    protected function getCreatedNotificationTitle(): ?string
+    {
+        return sprintf('Post %s!', $this->data['status']);
+    }
+
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         match ($this->data['status']) {

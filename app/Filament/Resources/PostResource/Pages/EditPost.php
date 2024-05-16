@@ -44,8 +44,7 @@ class EditPost extends EditRecord
             ->action(function (): void {
                 $this->data['status'] = 'published';
 
-                $this->save(shouldSendSavedNotification: false);
-                $this->getSavedNotification()->title('Post published!')->send();
+                $this->save();
             });
     }
 
@@ -58,9 +57,14 @@ class EditPost extends EditRecord
             ->action(function (): void {
                 $this->data['status'] = 'drafted';
 
-                $this->save(shouldSendSavedNotification: false);
-                $this->getSavedNotification()->title('Post drafted!')->send();
+                $this->save();
             });
+    }
+
+    protected function getSavedNotificationTitle(): ?string
+    {
+        return sprintf('Post %s!', $this->data['status']);
+        ;
     }
 
     protected function authorizeAccess(): void
