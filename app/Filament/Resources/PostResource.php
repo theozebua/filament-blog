@@ -78,7 +78,11 @@ class PostResource extends Resource
                                     ->multiple()
                                     ->options(Category::pluck('name', 'id'))
                                     ->optionsLimit(5)
-                                    ->required(),
+                                    ->required()
+                                    ->createOptionForm(CategoryResource::form($form)->getComponents())
+                                    ->createOptionAction(function (Forms\Components\Actions\Action $action): Forms\Components\Actions\Action {
+                                        return $action->extraModalFooterActions([]);
+                                    }),
 
                                 Forms\Components\SpatieTagsInput::make('tags'),
                             ]),
