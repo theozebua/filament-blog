@@ -8,6 +8,7 @@ use App\Filament\Resources\PostResource;
 use Filament\Actions\Action;
 use Filament\Resources\Pages\CreateRecord;
 use Filament\Support\Colors\Color;
+use Illuminate\Database\Eloquent\Model;
 
 class CreatePost extends CreateRecord
 {
@@ -60,6 +61,25 @@ class CreatePost extends CreateRecord
 
         $data['user_id'] = filament()->auth()->id();
 
+        foreach ($data['metas'] as $key => $value) {
+            $data['metas'][] = compact('key', 'value');
+
+            unset($data['metas'][$key]);
+        }
+
         return $data;
+    }
+
+    protected function handleRecordCreation(array $data): Model
+    {
+        $metas = $data['metas'];
+
+        unset($data['metas']);
+
+        $record = parent::handleRecordCreation($data);
+
+        $record->metas()->createMany($metas);
+
+        return $record;
     }
 }

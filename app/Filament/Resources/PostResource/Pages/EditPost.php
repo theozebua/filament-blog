@@ -10,6 +10,8 @@ use Filament\Actions;
 use Filament\Actions\Action;
 use Filament\Resources\Pages\EditRecord;
 use Filament\Support\Colors\Color;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class EditPost extends EditRecord
 {
@@ -20,12 +22,6 @@ class EditPost extends EditRecord
         return [
             Actions\DeleteAction::make()
                 ->button()
-                ->before(function (Post $record): void {
-                    $record->update([
-                        'published_at' => null,
-                        'archived_at' => null,
-                    ]);
-                })
                 ->keyBindings([]),
         ];
     }
@@ -80,6 +76,54 @@ class EditPost extends EditRecord
         };
 
         $data['user_id'] = filament()->auth()->id();
+
+        foreach ($data['metas'] as $key => $value) {
+            $data['metas'][] = compact('key', 'value');
+
+            unset($data['metas'][$key]);
+        }
+
+        return $data;
+    }
+
+    /**
+     * @param Post $record
+     */
+    protected function handleRecordUpdate(Model $record, array $data): Model
+    {
+        return $this->wrapInDatabaseTransaction(function () use ($record, $data): Model {
+            $metas = $data['metas'];
+
+            unset($data['metas']);
+
+            foreach ($metas as $meta) {
+                if ($meta['key'] === 'image') {
+                    $storage = Storage::disk('public');
+                    $oldImage = $record->metas->where('key', 'image')->first();
+
+                    if ($oldImage?->value !== $meta['value']) {
+                        $storage->exists($oldImage->value ?? '') && $storage->delete($oldImage->value ?? '');
+                    }
+                }
+
+                $record->metas->where('key', $meta['key'])->each->update(['value' => $meta['value']]);
+            }
+
+            return parent::handleRecordUpdate($record, $data);
+        });
+    }
+
+    protected function mutateFormDataBeforeFill(array $data): array
+    {
+        $data['metas'] = $this->getRecord()->metas->map->only(['key', 'value'])->toArray();
+
+        foreach ($data['metas'] as $index => $meta) {
+            ['key' => $key, 'value' => $value] = $meta;
+
+            $data['metas'][$key] = $value;
+
+            unset($data['metas'][$index]);
+        }
 
         return $data;
     }

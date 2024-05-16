@@ -46,7 +46,8 @@ class PostResource extends Resource
                                     ->unique('posts', 'slug', ignoreRecord: true),
 
                                 Forms\Components\RichEditor::make('body')
-                                    ->label('Content')
+                                    ->fileAttachmentsDisk('public')
+                                    ->fileAttachmentsDirectory('post-attachments')
                                     ->columnSpanFull()
                                     ->required(),
                             ])
@@ -82,7 +83,31 @@ class PostResource extends Resource
                                 Forms\Components\SpatieTagsInput::make('tags'),
                             ]),
 
-                        // TODO: Meta input fields for SEO
+                        Forms\Components\Section::make('SEO')
+                            ->schema([
+                                Forms\Components\TextInput::make('metas.title')
+                                    ->maxLength(255),
+
+                                Forms\Components\TextInput::make('metas.keywords')
+                                    ->helperText('Comma separated list of keywords')
+                                    ->maxLength(255),
+
+                                Forms\Components\Textarea::make('metas.description')
+                                    ->rows(4)
+                                    ->helperText(function (?string $state = null): string {
+                                        return sprintf('Max %d/160 characters', strlen($state ?? ''));
+                                    })
+                                    ->live(debounce: 500)
+                                    ->maxLength(160),
+
+                                Forms\Components\FileUpload::make('metas.image')
+                                    ->directory('meta-images')
+                                    ->disk('public')
+                                    ->imageEditor()
+                                    ->image(),
+                            ])
+                            ->collapsible()
+                            ->collapsed(),
                     ])
                     ->columnSpan([
                         'lg' => 1,
@@ -108,6 +133,9 @@ class PostResource extends Resource
                     ->searchable()
                     ->toggleable()
                     ->sortable(),
+            ])
+            ->filters([
+                Tables\Filters\TrashedFilter::make(),
             ])
             ->actions([
                 Tables\Actions\Action::make('publish')
@@ -145,13 +173,7 @@ class PostResource extends Resource
                     }),
 
                 Tables\Actions\DeleteAction::make()
-                    ->button()
-                    ->before(function (Post $record): void {
-                        $record->update([
-                            'published_at' => null,
-                            'archived_at' => null,
-                        ]);
-                    }),
+                    ->button(),
 
                 Tables\Actions\RestoreAction::make()
                     ->button(),
