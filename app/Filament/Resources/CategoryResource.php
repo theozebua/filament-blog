@@ -68,7 +68,8 @@ class CategoryResource extends Resource
                     ->url(static::getUrl('create'))
                     ->icon('heroicon-m-plus')
                     ->button(),
-            ]);
+            ])
+            ->recordUrl(null);
     }
 
     public static function getPages(): array
