@@ -21,7 +21,6 @@ class EditPost extends EditRecord
     {
         return [
             Actions\DeleteAction::make()
-                ->button()
                 ->keyBindings([]),
         ];
     }

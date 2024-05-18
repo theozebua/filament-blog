@@ -11,6 +11,7 @@ use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\Tables;
 use Filament\Widgets;
 use Hasnayeen\Themes\Http\Middleware\SetTheme;
 use Hasnayeen\Themes\ThemesPlugin;
@@ -66,5 +67,12 @@ class AdminPanelProvider extends PanelProvider
             ->plugins([
                 ThemesPlugin::make(),
             ]);
+    }
+
+    public function register(): void
+    {
+        parent::register();
+
+        Tables\Actions\Action::configureUsing(fn (Tables\Actions\Action $action) => $action->button());
     }
 }
