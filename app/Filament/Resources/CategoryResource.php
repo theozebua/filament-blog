@@ -52,10 +52,9 @@ class CategoryResource extends Resource
                     ->sortable(),
             ])
             ->actions([
-                Tables\Actions\EditAction::make()
-                    ->button(),
+                Tables\Actions\EditAction::make(),
+
                 Tables\Actions\DeleteAction::make()
-                    ->button()
                     ->before(function (Category $record): void {
                         // Delete relations to posts before deleting the category
                         $record->posts()->detach();
@@ -66,8 +65,7 @@ class CategoryResource extends Resource
                 Tables\Actions\Action::make('create')
                     ->label('New category')
                     ->url(static::getUrl('create'))
-                    ->icon('heroicon-m-plus')
-                    ->button(),
+                    ->icon('heroicon-m-plus'),
             ])
             ->recordUrl(null);
     }

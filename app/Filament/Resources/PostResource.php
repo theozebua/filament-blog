@@ -143,7 +143,6 @@ class PostResource extends Resource
             ])
             ->actions([
                 Tables\Actions\Action::make('publish')
-                    ->button()
                     ->color(Color::Green)
                     ->visible(function (Post $record): bool {
                         return $record->drafted();
@@ -157,7 +156,6 @@ class PostResource extends Resource
                     ->successNotificationTitle('Post published!'),
 
                 Tables\Actions\Action::make('draft')
-                    ->button()
                     ->color(Color::Gray)
                     ->visible(function (Post $record): bool {
                         return $record->published();
@@ -171,19 +169,15 @@ class PostResource extends Resource
                     ->successNotificationTitle('Post drafted!'),
 
                 Tables\Actions\EditAction::make()
-                    ->button()
                     ->hidden(function (Post $record): bool {
                         return $record->trashed();
                     }),
 
-                Tables\Actions\DeleteAction::make()
-                    ->button(),
+                Tables\Actions\DeleteAction::make(),
 
-                Tables\Actions\RestoreAction::make()
-                    ->button(),
+                Tables\Actions\RestoreAction::make(),
 
                 Tables\Actions\ForceDeleteAction::make()
-                    ->button()
                     ->before(function (Post $record): void {
                         // Delete relations to categories before deleting the post
                         $record->categories()->detach();
@@ -194,8 +188,7 @@ class PostResource extends Resource
                 Tables\Actions\Action::make('create')
                     ->label('New post')
                     ->url(static::getUrl('create'))
-                    ->icon('heroicon-m-plus')
-                    ->button(),
+                    ->icon('heroicon-m-plus'),
             ])
             ->recordUrl(null);
     }
