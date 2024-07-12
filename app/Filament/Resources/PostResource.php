@@ -9,6 +9,7 @@ use App\Models\Category;
 use App\Models\Post;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Support\Colors\Color;
 use Filament\Tables;
@@ -137,37 +138,39 @@ class PostResource extends Resource
                     ->searchable()
                     ->toggleable()
                     ->sortable(),
+
+                Tables\Columns\ToggleColumn::make('published_at')
+                    ->label('Published')
+                    ->updateStateUsing(function (Post $record, mixed $state): void {
+                        if ($state) {
+                            $record->publish();
+                        } else {
+                            $record->draft();
+                        }
+                    })
+                    ->afterStateUpdated(function (mixed $state): void {
+                        $notification = Notification::make('change-status-success');
+
+                        if ($state) {
+                            $notification
+                                ->success()
+                                ->title('Post published!');
+                        } else {
+                            $notification
+                                ->success()
+                                ->title('Post drafted!');
+                        }
+
+                        $notification->send();
+                    })
+                    ->onColor(Color::Green)
+                    ->onIcon('heroicon-o-check')
+                    ->offIcon('heroicon-o-x-mark'),
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
             ])
             ->actions([
-                Tables\Actions\Action::make('publish')
-                    ->color(Color::Green)
-                    ->visible(function (Post $record): bool {
-                        return $record->drafted();
-                    })
-                    ->action(function (Post $record): Post {
-                        return $record->publish();
-                    })
-                    ->after(function (Tables\Actions\Action $action): void {
-                        $action->sendSuccessNotification();
-                    })
-                    ->successNotificationTitle('Post published!'),
-
-                Tables\Actions\Action::make('draft')
-                    ->color(Color::Gray)
-                    ->visible(function (Post $record): bool {
-                        return $record->published();
-                    })
-                    ->action(function (Post $record): Post {
-                        return $record->draft();
-                    })
-                    ->after(function (Tables\Actions\Action $action): void {
-                        $action->sendSuccessNotification();
-                    })
-                    ->successNotificationTitle('Post drafted!'),
-
                 Tables\Actions\EditAction::make()
                     ->hidden(function (Post $record): bool {
                         return $record->trashed();

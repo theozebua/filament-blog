@@ -73,6 +73,7 @@ class AdminPanelProvider extends PanelProvider
     {
         parent::register();
 
-        Tables\Actions\Action::configureUsing(fn (Tables\Actions\Action $action) => $action->button());
+        \Filament\Actions\Action::configureUsing(fn (\Filament\Actions\Action $action) => $action->button()->outlined());
+        Tables\Actions\Action::configureUsing(fn (Tables\Actions\Action $action) => $action->button()->outlined());
     }
 }
