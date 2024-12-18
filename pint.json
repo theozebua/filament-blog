@@ -1,12 +1,9 @@
 {
     "preset": "psr12",
     "rules": {
-        "trailing_comma_in_multiline": true,
-        "ordered_class_elements": true,
-        "ordered_imports": true,
-        "ordered_interfaces": true,
-        "ordered_types": true,
-        "no_unused_imports": true,
+        "array_syntax": {
+            "syntax": "short"
+        },
         "blank_line_after_opening_tag": true,
         "blank_line_after_namespace": true,
         "blank_line_before_statement": {
@@ -36,8 +33,47 @@
                 "yield_from"
             ]
         },
-        "blank_line_between_import_groups": true,
         "blank_lines_before_namespace": true,
-        "cast_spaces": true
+        "blank_line_between_import_groups": true,
+        "cast_spaces": true,
+        "compact_nullable_type_declaration": true,
+        "declare_strict_types": true,
+        "fully_qualified_strict_types": true,
+        "global_namespace_import": {
+            "import_classes": true,
+            "import_constants": true,
+            "import_functions": true
+        },
+        "no_leading_import_slash": true,
+        "no_unused_imports": true,
+        "no_whitespace_in_blank_line": true,
+        "lowercase_cast": true,
+        "ordered_class_elements": true,
+        "ordered_imports": {
+            "imports_order": [
+                "class",
+                "function",
+                "const"
+            ],
+            "sort_algorithm": "alpha"
+        },
+        "ordered_interfaces": true,
+        "ordered_types": true,
+        "return_type_declaration": true,
+        "short_scalar_cast": true,
+        "single_quote": true,
+        "single_trait_insert_per_statement": true,
+        "space_after_semicolon": true,
+        "ternary_operator_spaces": true,
+        "trailing_comma_in_multiline": true,
+        "trim_array_spaces": true,
+        "visibility_required": {
+            "elements": [
+                "const",
+                "method",
+                "property"
+            ]
+        },
+        "whitespace_after_comma_in_array": true
     }
 }
