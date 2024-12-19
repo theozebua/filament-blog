@@ -100,16 +100,33 @@ class EditPost extends EditRecord
             unset($data['metas']);
 
             foreach ($metas as $meta) {
-                if ($meta['key'] === 'image') {
-                    $storage = Storage::disk('public');
-                    $oldImage = $record->metas->where('key', 'image')->first();
+                $currentMeta = $record->metas->where('key', $meta['key'])->first();
 
-                    if ($oldImage?->value !== $meta['value']) {
-                        $storage->exists($oldImage->value ?? '') && $storage->delete($oldImage->value ?? '');
+                if (!is_null($currentMeta)) {
+                    if (is_null($meta['value'])) {
+                        if ($meta['key'] === 'image') {
+                            $storage = Storage::disk('public');
+                            $oldImagePath = $currentMeta->value ?? '';
+
+                            $storage->exists($oldImagePath) && $storage->delete($oldImagePath);
+                        }
+
+                        $currentMeta->delete();
+
+                        continue;
                     }
+
+                    $currentMeta->update(['value' => $meta['value']]);
+
+                    continue;
                 }
 
-                $record->metas->where('key', $meta['key'])->each->update(['value' => $meta['value']]);
+                if (!is_null($meta['value'])) {
+                    $record->metas()->create([
+                        'key' => $meta['key'],
+                        'value' => $meta['value'],
+                    ]);
+                }
             }
 
             return parent::handleRecordUpdate($record, $data);

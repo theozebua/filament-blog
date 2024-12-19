@@ -49,6 +49,7 @@ class CategoryResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->searchable()
+                    ->toggleable()
                     ->sortable(),
             ])
             ->actions([
@@ -63,7 +64,7 @@ class CategoryResource extends Resource
             ->emptyStateIcon(static::$navigationIcon)
             ->emptyStateActions([
                 Tables\Actions\Action::make('create')
-                    ->label('New category')
+                    ->label('Create ' . static::getModelLabel())
                     ->url(static::getUrl('create'))
                     ->icon('heroicon-m-plus'),
             ])
