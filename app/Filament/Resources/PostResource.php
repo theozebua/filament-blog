@@ -112,8 +112,8 @@ class PostResource extends Resource
                                     ->image(),
                             ])
                             ->collapsible()
-                            ->collapsed(function (Post $record): bool {
-                                return $record->metas->isEmpty();
+                            ->collapsed(function (?Post $record = null): bool {
+                                return $record?->metas->isEmpty() ?? true;
                             }),
                     ])
                     ->columnSpan([
