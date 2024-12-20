@@ -8,6 +8,8 @@ use App\Filament\Resources\PostResource;
 use App\Filament\Resources\PostResource\Pages\CreatePost;
 use App\Models\Category;
 use App\Models\Post;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Livewire;
 use Tests\Feature\Filament\Resources\BasePostResource;
 
@@ -120,16 +122,16 @@ class CreatePostTest extends BasePostResource
         $post = Post::factory()->makeOne(['user_id' => $this->user->getKey()]);
         $category = Category::factory()->create();
 
+        Storage::fake('public');
+
+        $image = UploadedFile::fake()->image('something.jpg');
+
         Livewire::test(CreatePost::class)
             ->fillForm([
                 'title' => $title = $post->title,
                 'slug' => $slug = str($title)->slug(),
                 'body' => $post->body,
-                'cover' => [
-                    'collection_name' => 'covers',
-                    'file_name' => 'something.jpg',
-                    'disk' => 'public',
-                ],
+                'cover' => [$image],
                 'categories' => [
                     'name' => $category->getKey(),
                 ],
@@ -145,5 +147,9 @@ class CreatePostTest extends BasePostResource
             'body' => $post->body,
             'published_at' => now(),
         ]);
+
+        $cover = Post::latest()->first()->getFirstMedia('covers');
+
+        Storage::disk('public')->assertExists("{$cover->getKey()}/{$cover->file_name}");
     }
 }
