@@ -121,13 +121,14 @@ class CreatePostTest extends BasePostResource
     {
         $post = Post::factory()->makeOne(['user_id' => $this->user->getKey()]);
         $category = Category::factory()->create();
-
         $image = UploadedFile::fake()->image('something.jpg');
+        $title = $post->title;
+        $slug = str($title)->slug();
 
         Livewire::test(CreatePost::class)
             ->fillForm([
-                'title' => $title = $post->title,
-                'slug' => $slug = str($title)->slug(),
+                'title' => $title,
+                'slug' => $slug,
                 'body' => $post->body,
                 'cover' => [$image],
                 'categories' => [$category->getKey()],
