@@ -122,8 +122,6 @@ class CreatePostTest extends BasePostResource
         $post = Post::factory()->makeOne(['user_id' => $this->user->getKey()]);
         $category = Category::factory()->create();
 
-        Storage::fake('public');
-
         $image = UploadedFile::fake()->image('something.jpg');
 
         Livewire::test(CreatePost::class)
