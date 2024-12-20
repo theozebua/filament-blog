@@ -132,9 +132,7 @@ class CreatePostTest extends BasePostResource
                 'slug' => $slug = str($title)->slug(),
                 'body' => $post->body,
                 'cover' => [$image],
-                'categories' => [
-                    'name' => $category->getKey(),
-                ],
+                'categories' => [$category->getKey()],
                 'status' => 'published',
             ])
             ->call('create')
@@ -148,7 +146,7 @@ class CreatePostTest extends BasePostResource
             'published_at' => now(),
         ]);
 
-        $cover = Post::latest()->first()->getFirstMedia('covers');
+        $cover = Post::latest('id')->first()->getFirstMedia('covers');
 
         Storage::disk('public')->assertExists("{$cover->getKey()}/{$cover->file_name}");
     }
