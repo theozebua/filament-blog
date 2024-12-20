@@ -18,73 +18,73 @@ class CreatePostTest extends BasePostResource
         $this->get(PostResource::getUrl('create'))->assertOk();
     }
 
-    public function testCreatePageHasAForm(): void
+    public function testHasAForm(): void
     {
         Livewire::test(CreatePost::class)
             ->assertFormExists();
     }
 
-    public function testCreatePageHasTitleFields(): void
+    public function testHasTitleField(): void
     {
         Livewire::test(CreatePost::class)
             ->assertFormFieldExists('title');
     }
 
-    public function testCreatePageHasSlugFields(): void
+    public function testHasSlugField(): void
     {
         Livewire::test(CreatePost::class)
             ->assertFormFieldExists('slug');
     }
 
-    public function testCreatePageHasBodyFields(): void
+    public function testHasBodyField(): void
     {
         Livewire::test(CreatePost::class)
             ->assertFormFieldExists('body');
     }
 
-    public function testCreatePageHasCoverFields(): void
+    public function testHasCoverField(): void
     {
         Livewire::test(CreatePost::class)
             ->assertFormFieldExists('cover');
     }
 
-    public function testCreatePageHasCategoriesFields(): void
+    public function testHasCategoriesField(): void
     {
         Livewire::test(CreatePost::class)
             ->assertFormFieldExists('categories');
     }
 
-    public function testCreatePageHasTagsFields(): void
+    public function testHasTagsField(): void
     {
         Livewire::test(CreatePost::class)
             ->assertFormFieldExists('tags');
     }
 
-    public function testCreatePageHasMetasTitleFields(): void
+    public function testHasMetasTitleField(): void
     {
         Livewire::test(CreatePost::class)
             ->assertFormFieldExists('metas.title');
     }
 
-    public function testCreatePageHasMetasKeywordsFields(): void
+    public function testHasMetasKeywordsField(): void
     {
         Livewire::test(CreatePost::class)
             ->assertFormFieldExists('metas.keywords');
     }
 
-    public function testCreatePageHasMetasDescriptionFields(): void
+    public function testHasMetasDescriptionField(): void
     {
         Livewire::test(CreatePost::class)
             ->assertFormFieldExists('metas.description');
     }
 
-    public function testCreatePageHasMetasImageFields(): void
+    public function testHasMetasImageField(): void
     {
         Livewire::test(CreatePost::class)
             ->assertFormFieldExists('metas.image');
     }
 
-    public function testCreatePageCanAutomaticallyGenerateASlugFromTheTitle(): void
+    public function testCanAutomaticallyGenerateASlugFromTheTitle(): void
     {
         $title = fake()->sentence();
 
@@ -97,7 +97,7 @@ class CreatePostTest extends BasePostResource
             ]);
     }
 
-    public function testCreatePageCanValidateInput(): void
+    public function testCanValidateInput(): void
     {
         $post = $this->posts->first();
 
@@ -115,7 +115,7 @@ class CreatePostTest extends BasePostResource
             ]);
     }
 
-    public function testCreatePageCanCreateAPost(): void
+    public function testCanCreateAPost(): void
     {
         $post = Post::factory()->makeOne(['user_id' => $this->user->getKey()]);
         $category = Category::factory()->create();
