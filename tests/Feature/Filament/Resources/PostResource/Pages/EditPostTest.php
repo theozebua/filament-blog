@@ -187,4 +187,42 @@ class EditPostTest extends BasePostResource
 
         Storage::disk('public')->assertExists("{$cover->getKey()}/{$cover->file_name}");
     }
+
+    public function testCanUpdatePublishedPost(): void
+    {
+        /** @var Post $post */
+        $post = $this->posts->first();
+        $updatedPost = Post::factory()->make();
+        $newCategories = Category::factory(4)->create()->pluck('id')->toArray();
+        $image = UploadedFile::fake()->image('something.jpg');
+
+        Livewire::test(EditPost::class, ['record' => $post->getRouteKey()])
+            ->fillForm([
+                'title' => $updatedPost->title,
+                'slug' => $updatedPost->slug,
+                'body' => $updatedPost->body,
+                'categories' => $newCategories,
+            ])
+            ->set('data.cover', [$image])
+            ->callAction('save-published')
+            ->assertHasNoFormErrors();
+
+        $this->assertDatabaseHas(Post::class, [
+            'title' => $updatedPost->title,
+            'slug' => $updatedPost->slug,
+            'body' => $updatedPost->body,
+            'published_at' => now(),
+        ]);
+
+        foreach ($newCategories as $newCategory) {
+            $this->assertDatabaseHas('post_has_categories', [
+                'post_id' => $post->getKey(),
+                'category_id' => $newCategory,
+            ]);
+        }
+
+        $cover = $post->fresh()->getFirstMedia('covers');
+
+        Storage::disk('public')->assertExists("{$cover->getKey()}/{$cover->file_name}");
+    }
 }
