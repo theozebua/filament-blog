@@ -6,10 +6,12 @@ namespace Tests\Feature\Filament\Resources\PostResource\Pages;
 
 use App\Filament\Resources\PostResource;
 use App\Filament\Resources\PostResource\Pages\ListPosts;
+use App\Models\Post;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\ForceDeleteAction;
 use Filament\Tables\Actions\RestoreAction;
 use Filament\Tables\Filters\TrashedFilter;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Livewire;
 use Tests\Feature\Filament\Resources\BasePostResource;
 
@@ -110,7 +112,9 @@ class ListPostsTest extends BasePostResource
     {
         $this->posts->first()->delete();
 
+        /** @var Post $softDeletedPost */
         $softDeletedPost = $this->posts->whereNotNull('deleted_at')->first();
+        $softDeletedPostCover = $softDeletedPost->getFirstMedia('covers');
 
         Livewire::test(ListPosts::class)
             ->filterTable(TrashedFilter::class, false)
@@ -118,5 +122,7 @@ class ListPostsTest extends BasePostResource
             ->callTableAction(ForceDeleteAction::class, $softDeletedPost);
 
         $this->assertModelMissing($softDeletedPost);
+
+        Storage::disk('public')->assertMissing("{$softDeletedPostCover->getKey()}/{$softDeletedPostCover->file_name}");
     }
 }
