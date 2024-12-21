@@ -7,9 +7,6 @@ namespace Tests\Feature\Filament\Resources\PostResource\Pages;
 use App\Filament\Resources\CategoryResource;
 use App\Filament\Resources\CategoryResource\Pages\EditCategory;
 use App\Models\Category;
-use App\Models\Post;
-use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Storage;
 use Livewire\Livewire;
 use Tests\Feature\Filament\Resources\BaseCategoryResource;
 
