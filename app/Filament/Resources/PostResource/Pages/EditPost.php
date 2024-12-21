@@ -63,7 +63,6 @@ class EditPost extends EditRecord
     protected function getSavedNotificationTitle(): ?string
     {
         return sprintf('Post %s!', $this->data['status']);
-        ;
     }
 
     protected function authorizeAccess(): void
