@@ -46,7 +46,7 @@ class EditCategoryTest extends BaseCategoryResource
             ->assertFormFieldExists('slug');
     }
 
-    public function testCanAutomaticallyGenerateASlugFromTheTitle(): void
+    public function testCanAutomaticallyGenerateASlugFromTheName(): void
     {
         $name = fake()->sentence();
 
