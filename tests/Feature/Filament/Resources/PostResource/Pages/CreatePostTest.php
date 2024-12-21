@@ -117,7 +117,7 @@ class CreatePostTest extends BasePostResource
             ]);
     }
 
-    public function testCanCreateAPost(): void
+    public function testCanCreateAPublishedPost(): void
     {
         $post = Post::factory()->makeOne(['user_id' => $this->user->getKey()]);
         $category = Category::factory()->create();
@@ -132,9 +132,8 @@ class CreatePostTest extends BasePostResource
                 'body' => $post->body,
                 'cover' => [$image],
                 'categories' => [$category->getKey()],
-                'status' => 'published',
             ])
-            ->call('create')
+            ->callAction('create-published')
             ->assertHasNoFormErrors();
 
         $this->assertDatabaseHas(Post::class, [
@@ -143,6 +142,38 @@ class CreatePostTest extends BasePostResource
             'slug' => $slug,
             'body' => $post->body,
             'published_at' => now(),
+        ]);
+
+        $cover = Post::latest('id')->first()->getFirstMedia('covers');
+
+        Storage::disk('public')->assertExists("{$cover->getKey()}/{$cover->file_name}");
+    }
+
+    public function testCanCreateADraftedPost(): void
+    {
+        $post = Post::factory()->makeOne(['user_id' => $this->user->getKey()]);
+        $category = Category::factory()->create();
+        $image = UploadedFile::fake()->image('something.jpg');
+        $title = $post->title;
+        $slug = str($title)->slug();
+
+        Livewire::test(CreatePost::class)
+            ->fillForm([
+                'title' => $title,
+                'slug' => $slug,
+                'body' => $post->body,
+                'cover' => [$image],
+                'categories' => [$category->getKey()],
+            ])
+            ->callAction('create-drafted')
+            ->assertHasNoFormErrors();
+
+        $this->assertDatabaseHas(Post::class, [
+            'user_id' => $this->user->getKey(),
+            'title' => $title,
+            'slug' => $slug,
+            'body' => $post->body,
+            'published_at' => null,
         ]);
 
         $cover = Post::latest('id')->first()->getFirstMedia('covers');
