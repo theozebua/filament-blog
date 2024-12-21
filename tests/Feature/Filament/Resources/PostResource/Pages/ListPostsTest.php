@@ -49,12 +49,29 @@ class ListPostsTest extends BasePostResource
         Livewire::test(ListPosts::class)->assertCanRenderTableColumn('published_at');
     }
 
+    public function testCanGetPostCover(): void
+    {
+        /** @var Post $post */
+        $post = $this->posts->first();
+
+        Livewire::test(ListPosts::class)
+            ->assertTableColumnStateSet('cover', [$post->getFirstMedia('covers')->uuid], $post);
+    }
+
     public function testCanGetPostTitle(): void
     {
         $post = $this->posts->first();
 
         Livewire::test(ListPosts::class)
             ->assertTableColumnStateSet('title', $post->title, $post);
+    }
+
+    public function testCanGetPostPublishedAt(): void
+    {
+        $post = $this->posts->first();
+
+        Livewire::test(ListPosts::class)
+            ->assertTableColumnStateSet('published_at', $post->published_at, $post);
     }
 
     public function testCanGetPostAuthorNames(): void

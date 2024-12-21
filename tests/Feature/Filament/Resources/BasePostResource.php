@@ -25,7 +25,10 @@ class BasePostResource extends FilamentBaseTestCase
 
         Storage::fake('public');
 
-        $this->posts = Post::factory(10)->create(['user_id' => $this->user->getKey()]);
+        $this->posts = Post::factory(10)->create([
+            'user_id' => $this->user->getKey(),
+            'published_at' => now(),
+        ]);
 
         $this->posts->each(function (Post $post): void {
             $post->addMedia(UploadedFile::fake()->image(Str::random() . '.jpg'))->toMediaCollection('covers');
