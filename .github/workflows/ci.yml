@@ -30,5 +30,10 @@ jobs:
       - name: Run Laravel Pint
         run: composer pint:check
 
+      - name: Setup DB
+        run: sudo systemctl start mysql.service && mysql --user=root --password=root -e "CREATE DATABASE laravel"
+
       - name: Run Tests
+        env:
+          DB_PASSWORD: root
         run: composer test
