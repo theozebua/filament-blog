@@ -17,7 +17,7 @@ class ListCategoriesTest extends BaseCategoryResource
         $this->get(CategoryResource::getUrl('index'))->assertOk();
     }
 
-    public function testCanListPosts(): void
+    public function testCanListCategories(): void
     {
         Livewire::test(ListCategories::class)
             ->assertCanSeeTableRecords($this->categories)
