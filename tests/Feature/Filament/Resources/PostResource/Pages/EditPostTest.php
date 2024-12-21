@@ -121,7 +121,7 @@ class EditPostTest extends BasePostResource
                 'cover' => null,
                 'categories' => null,
             ])
-            ->call('save')
+            ->callAction('save-published')
             ->assertHasFormErrors([
                 'title' => ['unique:posts,title'],
                 'slug' => ['unique:posts,slug'],
